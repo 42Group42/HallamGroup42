@@ -1,18 +1,36 @@
-
 <?php
+$servername = "localhost";
+$username = "yourusername";
+$password = "yourpassword";
+$dbname = "yourdatabase";
 
-function getStudent (){
-    $db = new SQLITE3('C:\\xampp\\Storageforhallam\\Database.db');
-    $sql = "SELECT * FROM students";
-    $stmt = $db->prepare($sql);
-    $result = $stmt->execute();
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-    $arrayResult = [];
-    
-    while ($row = $result->fetchArray()){ // use fetchArray(SQLITE3_NUM) - another approach
-
-
-        $arrayResult [] = $row;
-    }
-    return $arrayResult;
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
 }
+
+// Retrieve student information
+$id = $_GET['id'];
+$sql = "SELECT * FROM students WHERE id = $id";
+$result = $conn->query($sql);
+
+// Display student information
+if ($result->num_rows > 0) {
+  // Output data of each row
+  while($row = $result->fetch_assoc()) {
+    echo "Name: " . $row["name"] . "<br>";
+    echo "ID: " . $row["id"] . "<br>";
+    echo "Program: " . $row["program"] . "<br>";
+    echo "Advisor: " . $row["advisor"] . "<br>";
+  }
+} else {
+  echo "0 results";
+}
+
+// Close connection
+$conn->close();
+?>
+
